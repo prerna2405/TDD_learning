@@ -1,8 +1,4 @@
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import SummaryForm from "../SummaryForm";
 import userEvent from "@testing-library/user-event";
 
@@ -38,9 +34,7 @@ test("Terms and Conditions functionality", async () => {
 test("popover responds to hover", async () => {
   render(<SummaryForm />);
   const user = userEvent.setup();
-  const TNC_checkbox = screen.getByRole("checkbox", {
-    name: /terms and conditions/i,
-  });
+  const TNC_checkbox = screen.getByText(/terms and conditions/i);
 
   //popover starts out hidden
   const nullPopover = screen.queryByText(
@@ -55,7 +49,8 @@ test("popover responds to hover", async () => {
 
   //popover disappears when we mouse out
   await user.unhover(TNC_checkbox);
-  await waitForElementToBeRemoved(() =>
-    screen.queryByText(/no ice cream will actually be delivered/i)
+  const notPopover = screen.queryByText(
+    /no ice cream will actually be delivered/i
   );
+  expect(notPopover).not.toBeInTheDocument();
 });
